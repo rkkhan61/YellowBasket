@@ -4,6 +4,7 @@ import PhotosUI
 struct ScanView: View {
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
+    @State private var isAnalyzing = false
     @State private var showConfirmation = false
 
     var body: some View {
@@ -57,22 +58,42 @@ struct ScanView: View {
             }
 
             VStack(spacing: 12) {
+                // Continue with loading state
                 Button {
-                    showConfirmation = true
+                    isAnalyzing = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        isAnalyzing = false
+                        showConfirmation = true
+                    }
                 } label: {
-                    Text("Continue")
-                        .font(.headline)
-                        .foregroundStyle(.black)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+                    ZStack {
+                        Text("Continue")
+                            .font(.headline)
+                            .opacity(isAnalyzing ? 0 : 1)
+
+                        HStack(spacing: 8) {
+                            ProgressView()
+                                .tint(.black)
+                                .scaleEffect(0.85)
+                            Text("Analyzing ingredients...")
+                                .font(.headline)
+                        }
+                        .opacity(isAnalyzing ? 1 : 0)
+                    }
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
                 }
+                .buttonStyle(PressableButtonStyle())
+                .disabled(isAnalyzing)
 
                 PhotosPicker(selection: $selectedItem, matching: .images) {
                     Text("Choose a different photo")
                         .font(.subheadline)
                         .foregroundStyle(Color.brand)
                 }
+                .disabled(isAnalyzing)
             }
             .padding(.horizontal, 24)
         }
@@ -113,6 +134,7 @@ struct ScanView: View {
                     .padding(.vertical, 16)
                     .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
             }
+            .buttonStyle(PressableButtonStyle())
             .padding(.horizontal, 24)
         }
     }

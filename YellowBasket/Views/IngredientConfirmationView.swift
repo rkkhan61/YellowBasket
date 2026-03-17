@@ -2,6 +2,7 @@ import SwiftUI
 
 struct IngredientConfirmationView: View {
     @State private var ingredients = MockDataService.detectedIngredients
+    @State private var isFinding = false
     @State private var showRecipes = false
 
     private var confirmedIngredients: [Ingredient] {
@@ -38,19 +39,36 @@ struct IngredientConfirmationView: View {
                 // CTA
                 VStack(spacing: 10) {
                     Button {
-                        showRecipes = true
+                        isFinding = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            isFinding = false
+                            showRecipes = true
+                        }
                     } label: {
-                        Text("Find Recipes")
-                            .font(.headline)
-                            .foregroundStyle(.black)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(
-                                confirmedIngredients.isEmpty ? Color(.systemGray4) : Color.brand,
-                                in: RoundedRectangle(cornerRadius: 14)
-                            )
+                        ZStack {
+                            Text("Find Recipes")
+                                .font(.headline)
+                                .opacity(isFinding ? 0 : 1)
+
+                            HStack(spacing: 8) {
+                                ProgressView()
+                                    .tint(.black)
+                                    .scaleEffect(0.85)
+                                Text("Finding recipes...")
+                                    .font(.headline)
+                            }
+                            .opacity(isFinding ? 1 : 0)
+                        }
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(
+                            confirmedIngredients.isEmpty ? Color(.systemGray4) : Color.brand,
+                            in: RoundedRectangle(cornerRadius: 14)
+                        )
                     }
-                    .disabled(confirmedIngredients.isEmpty)
+                    .buttonStyle(PressableButtonStyle())
+                    .disabled(confirmedIngredients.isEmpty || isFinding)
 
                     Text("\(confirmedIngredients.count) of \(ingredients.count) selected")
                         .font(.caption)
@@ -92,10 +110,12 @@ private struct IngredientRow: View {
                 Image(systemName: ingredient.isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
                     .foregroundStyle(ingredient.isSelected ? Color.brand : Color(.systemGray3))
+                    .animation(.easeInOut(duration: 0.15), value: ingredient.isSelected)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
         }
+        .buttonStyle(PressableButtonStyle())
     }
 }
 

@@ -7,19 +7,31 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            Color(.systemBackground).ignoresSafeArea()
+            // Soft gradient background — warm at top, neutral below
+            LinearGradient(
+                colors: [Color.brand.opacity(0.10), Color(.systemBackground)],
+                startPoint: .top,
+                endPoint: .center
+            )
+            .ignoresSafeArea()
 
             VStack(spacing: 0) {
                 Spacer()
 
-                // Brand mark
-                VStack(spacing: 16) {
+                // Brand mark with concentric glow rings
+                VStack(spacing: 18) {
                     ZStack {
                         Circle()
-                            .fill(Color.brand.opacity(0.12))
-                            .frame(width: 88, height: 88)
+                            .fill(Color.brand.opacity(0.06))
+                            .frame(width: 148, height: 148)
+                        Circle()
+                            .fill(Color.brand.opacity(0.10))
+                            .frame(width: 110, height: 110)
+                        Circle()
+                            .fill(Color.brand.opacity(0.16))
+                            .frame(width: 80, height: 80)
                         Image(systemName: "basket.fill")
-                            .font(.system(size: 40))
+                            .font(.system(size: 36, weight: .semibold))
                             .foregroundStyle(Color.brand)
                     }
 
@@ -72,6 +84,7 @@ struct LoginView: View {
                         .padding(.vertical, 16)
                         .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
                 }
+                .buttonStyle(PressableButtonStyle())
                 .padding(.horizontal, 28)
 
                 Spacer().frame(height: 16)

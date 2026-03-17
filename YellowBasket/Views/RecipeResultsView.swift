@@ -26,18 +26,40 @@ struct RecipeResultsView: View {
                 }
                 .padding(.horizontal, 24)
 
-                VStack(spacing: 12) {
-                    ForEach(MockDataService.recipes) { recipe in
-                        RecipeCard(recipe: recipe)
+                if MockDataService.recipes.isEmpty {
+                    emptyRecipes
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(Array(MockDataService.recipes.enumerated()), id: \.element.id) { index, recipe in
+                            RecipeCard(recipe: recipe)
+                                .transition(.opacity)
+                        }
                     }
+                    .padding(.horizontal, 24)
                 }
-                .padding(.horizontal, 24)
             }
             .padding(.top, 16)
             .padding(.bottom, 32)
         }
         .navigationTitle("Results")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    // MARK: - Empty recipes fallback
+
+    private var emptyRecipes: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "fork.knife.circle")
+                .font(.system(size: 40))
+                .foregroundStyle(Color(.systemGray3))
+            Text("No recipes found.")
+                .font(.headline)
+            Text("Try adjusting your ingredients.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 48)
     }
 
     // MARK: - Placeholder (used as Recipes tab)
@@ -98,6 +120,10 @@ private struct RecipeCard: View {
                 }
 
                 Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color(.systemGray3))
             }
 
             Text(recipe.description)
@@ -112,6 +138,12 @@ private struct RecipeCard: View {
 #Preview("Results") {
     NavigationStack {
         RecipeResultsView(ingredients: MockDataService.detectedIngredients)
+    }
+}
+
+#Preview("Empty recipes") {
+    NavigationStack {
+        RecipeResultsView(ingredients: [MockDataService.detectedIngredients[0]])
     }
 }
 
