@@ -1,24 +1,23 @@
-//
-//  ContentView.swift
-//  YellowBasket
-//
-//  Created by Raid Khan on 3/17/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(AppState.self) private var appState
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack {
+            if appState.isLoggedIn {
+                MainTabView()
+                    .transition(.opacity)
+            } else {
+                LoginView()
+                    .transition(.opacity)
+            }
         }
-        .padding()
+        .animation(.easeInOut(duration: 0.25), value: appState.isLoggedIn)
     }
 }
 
 #Preview {
     ContentView()
+        .environment(AppState())
 }

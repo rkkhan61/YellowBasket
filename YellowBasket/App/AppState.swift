@@ -1,8 +1,11 @@
-//
-//  AppState.swift
-//  YellowBasket
-//
-//  Created by Raid Khan on 3/17/26.
-//
+import SwiftUI
+import Observation
 
-import Foundation
+@Observable
+final class AppState {
+    var isLoggedIn = false
+}
+
+extension Color {
+    static let brand = Color(red: 0.98, green: 0.72, blue: 0.06)
+}
