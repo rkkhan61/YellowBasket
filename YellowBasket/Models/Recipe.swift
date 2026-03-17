@@ -1,7 +1,9 @@
-//
-//  Recipe.swift
-//  YellowBasket
-//
-//  Created by Raid Khan on 3/17/26.
-//
+import Foundation
 
+struct Recipe: Identifiable {
+    let id: UUID
+    let name: String
+    let description: String
+    let cookTime: String
+    let emoji: String
+}

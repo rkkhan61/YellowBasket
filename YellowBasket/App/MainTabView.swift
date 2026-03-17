@@ -9,8 +9,10 @@ struct MainTabView: View {
             ScanView()
                 .tabItem { Label("Scan", systemImage: "barcode.viewfinder") }
 
-            RecipeResultsView()
-                .tabItem { Label("Recipes", systemImage: "fork.knife") }
+            NavigationStack {
+                RecipeResultsView()
+            }
+            .tabItem { Label("Recipes", systemImage: "fork.knife") }
 
             SavedPlaceholderView()
                 .tabItem { Label("Saved", systemImage: "bookmark.fill") }

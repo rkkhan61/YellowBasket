@@ -1,34 +1,119 @@
 import SwiftUI
+import PhotosUI
 
 struct ScanView: View {
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImage: UIImage?
+    @State private var showConfirmation = false
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                Spacer()
-
-                VStack(spacing: 20) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.brand.opacity(0.1))
-                            .frame(width: 100, height: 100)
-                        Image(systemName: "barcode.viewfinder")
-                            .font(.system(size: 48))
-                            .foregroundStyle(Color.brand)
+            ScrollView {
+                VStack(spacing: 28) {
+                    if let image = selectedImage {
+                        imagePreview(image)
+                    } else {
+                        emptyState
                     }
+                }
+                .padding(.top, 16)
+                .padding(.bottom, 32)
+            }
+            .navigationTitle("Scan")
+            .navigationDestination(isPresented: $showConfirmation) {
+                IngredientConfirmationView()
+            }
+            .onChange(of: selectedItem) { _, newItem in
+                Task {
+                    guard let newItem else { return }
+                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                       let image = UIImage(data: data) {
+                        selectedImage = image
+                    }
+                }
+            }
+        }
+    }
 
-                    VStack(spacing: 8) {
-                        Text("Scan Ingredients")
-                            .font(.title2.bold())
-                        Text("Scan your fridge and pantry\nto find matching recipes.")
+    // MARK: - Image Preview
+
+    @ViewBuilder
+    private func imagePreview(_ image: UIImage) -> some View {
+        VStack(spacing: 20) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity)
+                .frame(height: 260)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .padding(.horizontal, 24)
+
+            VStack(spacing: 4) {
+                Text("Photo ready")
+                    .font(.headline)
+                Text("Tap continue to detect your ingredients.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            VStack(spacing: 12) {
+                Button {
+                    showConfirmation = true
+                } label: {
+                    Text("Continue")
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+                }
+
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    Text("Choose a different photo")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.brand)
+                }
+            }
+            .padding(.horizontal, 24)
+        }
+    }
+
+    // MARK: - Empty State
+
+    private var emptyState: some View {
+        VStack(spacing: 20) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(.secondarySystemBackground))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 220)
+
+                VStack(spacing: 12) {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .font(.system(size: 44))
+                        .foregroundStyle(Color.brand)
+
+                    VStack(spacing: 4) {
+                        Text("No photo selected")
+                            .font(.headline)
+                        Text("Choose a fridge or pantry photo\nto detect ingredients.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
                 }
-
-                Spacer()
             }
-            .navigationTitle("Scan")
+            .padding(.horizontal, 24)
+
+            PhotosPicker(selection: $selectedItem, matching: .images) {
+                Label("Choose Photo", systemImage: "photo.badge.plus")
+                    .font(.headline)
+                    .foregroundStyle(.black)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+            }
+            .padding(.horizontal, 24)
         }
     }
 }
