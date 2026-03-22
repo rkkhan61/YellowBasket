@@ -36,9 +36,9 @@ struct LoginView: View {
                     }
 
                     VStack(spacing: 6) {
-                        Text("YellowBasket")
+                        Text("Yellow Basket")
                             .font(.system(size: 32, weight: .bold, design: .rounded))
-                        Text("Cook smarter. Waste less.")
+                        Text("* Brand tagline to be inserted later *")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -89,7 +89,7 @@ struct LoginView: View {
 
                 Spacer().frame(height: 16)
 
-                Text("Demo mode — any credentials work")
+                Text(" *Note: This is a demo version, any login credentials work")
                     .font(.caption)
                     .foregroundStyle(Color(.tertiaryLabel))
 
