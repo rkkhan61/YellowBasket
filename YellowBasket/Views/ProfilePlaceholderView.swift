@@ -1,50 +1,38 @@
 import SwiftUI
 
 struct ProfilePlaceholderView: View {
-    @Environment(AppState.self) private var appState
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                Spacer()
+        VStack(spacing: 20) {
 
-                VStack(spacing: 20) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.brand.opacity(0.1))
-                            .frame(width: 100, height: 100)
-                        Image(systemName: "person.fill")
-                            .font(.system(size: 44))
-                            .foregroundStyle(Color.brand)
-                    }
+            Text("Profile")
+                .font(.largeTitle)
+                .fontWeight(.bold)
 
-                    VStack(spacing: 8) {
-                        Text("Profile")
-                            .font(.title2.bold())
-                        Text("Your account details and\npreferences live here.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
+            Text("User profile features coming soon")
+                .foregroundColor(.gray)
+
+            Button(action: {
+                do {
+                    try AuthService.shared.logout()
+                } catch {
+                    print("Logout error:", error)
                 }
-
-                Spacer()
-
-                Button {
-                    appState.isLoggedIn = false
-                } label: {
-                    Text("Sign Out")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.bottom, 32)
+            }) {
+                Text("Log Out")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.red)
+                    .cornerRadius(10)
             }
-            .navigationTitle("Profile")
+            .padding(.top, 40)
+
         }
+        .padding()
     }
 }
 
 #Preview {
     ProfilePlaceholderView()
-        .environment(AppState())
 }

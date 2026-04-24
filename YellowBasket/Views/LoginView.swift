@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @Environment(AppState.self) private var appState
+    @StateObject private var viewModel = LoginViewModel()
     @State private var email = ""
     @State private var password = ""
 
@@ -71,27 +71,97 @@ struct LoginView: View {
                 }
                 .padding(.horizontal, 28)
 
-                Spacer().frame(height: 24)
-
-                // Sign in
-                Button {
-                    appState.isLoggedIn = true
-                } label: {
-                    Text("Sign In")
-                        .font(.headline)
-                        .foregroundStyle(.black)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
-                }
-                .buttonStyle(PressableButtonStyle())
-                .padding(.horizontal, 28)
-
                 Spacer().frame(height: 16)
 
-                Text(" *Note: This is a demo version, any login credentials work")
-                    .font(.caption)
-                    .foregroundStyle(Color(.tertiaryLabel))
+                // Error message
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 28)
+                        .padding(.bottom, 8)
+                }
+
+                // Primary CTA
+                Button {
+                    Task { await viewModel.submit(email: email, password: password) }
+                } label: {
+                    Group {
+                        if viewModel.isLoading {
+                            ProgressView().tint(.black)
+                        } else {
+                            Text(viewModel.isSignUp ? "Create Account" : "Sign In")
+                                .font(.headline)
+                                .foregroundStyle(.black)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(PressableButtonStyle())
+                .disabled(viewModel.isLoading)
+                .padding(.horizontal, 28)
+
+                Spacer().frame(height: 14)
+
+                // Mode toggle
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.isSignUp.toggle()
+                        viewModel.errorMessage = nil
+                    }
+                } label: {
+                    Text(viewModel.isSignUp ? "Already have an account? **Sign In**" : "Don't have an account? **Sign Up**")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+
+                Spacer().frame(height: 28)
+
+                // OR divider
+                HStack(spacing: 12) {
+                    Rectangle()
+                        .fill(Color(.separator))
+                        .frame(height: 1)
+                    Text("OR")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                    Rectangle()
+                        .fill(Color(.separator))
+                        .frame(height: 1)
+                }
+                .padding(.horizontal, 28)
+
+                Spacer().frame(height: 20)
+
+                // Google Sign-In
+                Button {
+                    Task { await viewModel.signInWithGoogle() }
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "globe")
+                            .font(.system(size: 17, weight: .medium))
+                        Text("Continue with Google")
+                            .font(.headline)
+                    }
+                    .foregroundStyle(.primary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .background(
+                        Color(.secondarySystemBackground),
+                        in: RoundedRectangle(cornerRadius: 14)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(Color(.separator), lineWidth: 1)
+                    )
+                }
+                .buttonStyle(PressableButtonStyle())
+                .disabled(viewModel.isLoading)
+                .padding(.horizontal, 28)
 
                 Spacer()
             }
@@ -101,5 +171,4 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
-        .environment(AppState())
 }

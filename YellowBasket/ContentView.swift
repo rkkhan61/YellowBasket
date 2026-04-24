@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(AppState.self) private var appState
+    @EnvironmentObject private var sessionManager: SessionManager
 
     var body: some View {
         ZStack {
-            if appState.isLoggedIn {
+            if sessionManager.isLoggedIn {
                 MainTabView()
                     .transition(.opacity)
             } else {
@@ -13,11 +13,12 @@ struct ContentView: View {
                     .transition(.opacity)
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: appState.isLoggedIn)
+        .animation(.easeInOut(duration: 0.25), value: sessionManager.isLoggedIn)
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(SessionManager())
         .environment(AppState())
 }

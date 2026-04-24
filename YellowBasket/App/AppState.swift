@@ -3,7 +3,6 @@ import Observation
 
 @Observable
 final class AppState {
-    var isLoggedIn = false
 }
 
 extension Color {
