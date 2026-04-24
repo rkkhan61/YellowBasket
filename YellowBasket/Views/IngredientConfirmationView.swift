@@ -1,13 +1,7 @@
 import SwiftUI
 
 struct IngredientConfirmationView: View {
-    @State private var ingredients = MockDataService.detectedIngredients
-    @State private var isFinding = false
-    @State private var showRecipes = false
-
-    private var confirmedIngredients: [Ingredient] {
-        ingredients.filter { $0.isSelected }
-    }
+    @StateObject private var viewModel = IngredientConfirmationViewModel()
 
     var body: some View {
         ScrollView {
@@ -25,9 +19,9 @@ struct IngredientConfirmationView: View {
 
                 // Ingredient list
                 VStack(spacing: 0) {
-                    ForEach($ingredients) { $ingredient in
+                    ForEach($viewModel.ingredients) { $ingredient in
                         IngredientRow(ingredient: $ingredient)
-                        if ingredient.id != ingredients.last?.id {
+                        if ingredient.id != viewModel.ingredients.last?.id {
                             Divider()
                                 .padding(.leading, 58)
                         }
@@ -39,16 +33,12 @@ struct IngredientConfirmationView: View {
                 // CTA
                 VStack(spacing: 10) {
                     Button {
-                        isFinding = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            isFinding = false
-                            showRecipes = true
-                        }
+                        Task { await viewModel.confirmAndFindRecipes() }
                     } label: {
                         ZStack {
                             Text("Find Recipes")
                                 .font(.headline)
-                                .opacity(isFinding ? 0 : 1)
+                                .opacity(viewModel.isFinding ? 0 : 1)
 
                             HStack(spacing: 8) {
                                 ProgressView()
@@ -57,20 +47,20 @@ struct IngredientConfirmationView: View {
                                 Text("Finding recipes...")
                                     .font(.headline)
                             }
-                            .opacity(isFinding ? 1 : 0)
+                            .opacity(viewModel.isFinding ? 1 : 0)
                         }
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                         .background(
-                            confirmedIngredients.isEmpty ? Color(.systemGray4) : Color.brand,
+                            viewModel.confirmedIngredients.isEmpty ? Color(.systemGray4) : Color.brand,
                             in: RoundedRectangle(cornerRadius: 14)
                         )
                     }
                     .buttonStyle(PressableButtonStyle())
-                    .disabled(confirmedIngredients.isEmpty || isFinding)
+                    .disabled(viewModel.confirmedIngredients.isEmpty || viewModel.isFinding)
 
-                    Text("\(confirmedIngredients.count) of \(ingredients.count) selected")
+                    Text("\(viewModel.confirmedIngredients.count) of \(viewModel.ingredients.count) selected")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -81,8 +71,8 @@ struct IngredientConfirmationView: View {
         }
         .navigationTitle("Confirm")
         .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(isPresented: $showRecipes) {
-            RecipeResultsView(ingredients: confirmedIngredients)
+        .navigationDestination(isPresented: $viewModel.showRecipes) {
+            RecipeResultsView(ingredients: viewModel.confirmedIngredients)
         }
     }
 }

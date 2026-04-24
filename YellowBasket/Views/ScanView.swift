@@ -47,6 +47,7 @@ struct ScanView: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 260)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
+                .allowsHitTesting(false)   // prevents overflow hit area blocking buttons below
                 .padding(.horizontal, 24)
 
             VStack(spacing: 4) {
@@ -58,7 +59,6 @@ struct ScanView: View {
             }
 
             VStack(spacing: 12) {
-                // Continue with loading state
                 Button {
                     isAnalyzing = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {

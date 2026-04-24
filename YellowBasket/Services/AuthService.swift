@@ -1,5 +1,7 @@
 import Foundation
+import UIKit
 import FirebaseAuth
+import GoogleSignIn
 
 final class AuthService {
     static let shared = AuthService()
@@ -21,8 +23,41 @@ final class AuthService {
         try Auth.auth().signOut()
     }
 
-    // MARK: - Google Sign-In (stub — wire up GoogleSignIn SDK here)
+    // MARK: - Google Sign-In
+    @MainActor
     func signInWithGoogle() async throws {
-        // TODO: present Google Sign-In flow and exchange credential with Firebase
+        guard let rootVC = rootViewController() else {
+            throw AuthServiceError.missingRootViewController
+        }
+        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootVC)
+        guard let idToken = result.user.idToken?.tokenString else {
+            throw AuthServiceError.missingToken
+        }
+        let credential = GoogleAuthProvider.credential(
+            withIDToken: idToken,
+            accessToken: result.user.accessToken.tokenString
+        )
+        try await Auth.auth().signIn(with: credential)
+    }
+
+    @MainActor
+    private func rootViewController() -> UIViewController? {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+            .flatMap { $0.windows.first(where: \.isKeyWindow) }?
+            .rootViewController
+    }
+}
+
+enum AuthServiceError: LocalizedError {
+    case missingRootViewController
+    case missingToken
+
+    var errorDescription: String? {
+        switch self {
+        case .missingRootViewController: return "Unable to present sign-in screen."
+        case .missingToken: return "Google Sign-In did not return a valid token."
+        }
     }
 }
