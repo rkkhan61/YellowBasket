@@ -69,7 +69,7 @@ struct HomeView: View {
             }
             Spacer()
             HStack(spacing: 4) {
-                Image(systemName: "location.fill")
+                Text("📍")
                     .font(.caption2)
                 Text("Liverpool, L6")
                     .font(.caption.weight(.medium))
@@ -87,8 +87,8 @@ struct HomeView: View {
 
     private var searchBar: some View {
         HStack(spacing: 10) {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+            Text("🔍")
+                .font(.subheadline)
             TextField("Search ingredients, deals, stores...", text: $viewModel.searchText)
                 .autocorrectionDisabled()
                 .autocapitalization(.none)
@@ -109,9 +109,9 @@ struct HomeView: View {
 
     private var impactStats: some View {
         HStack(spacing: 10) {
-            ImpactStatCard(value: "£12.40", label: "Saved", icon: "sterling.sign.circle.fill", color: .green)
-            ImpactStatCard(value: "8", label: "Meals rescued", icon: "fork.knife.circle.fill", color: Color.brand)
-            ImpactStatCard(value: "2.3kg", label: "CO₂ reduced", icon: "leaf.circle.fill", color: .teal)
+            ImpactStatCard(value: "£12.40", label: "Saved", emoji: "💰")
+            ImpactStatCard(value: "8", label: "Meals rescued", emoji: "🍽️")
+            ImpactStatCard(value: "2.3kg", label: "CO₂ reduced", emoji: "🌿")
         }
         .padding(.horizontal, 20)
     }
@@ -120,11 +120,11 @@ struct HomeView: View {
 
     private var scanHero: some View {
         Button { selectedTab = 1 } label: {
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
                         Text("Scan your kitchen")
-                            .font(.title3.bold())
+                            .font(.title2.bold())
                             .foregroundStyle(.primary)
                         Text("Find recipes from what\nyou already have")
                             .font(.subheadline)
@@ -132,35 +132,32 @@ struct HomeView: View {
                     }
 
                     HStack(spacing: 8) {
-                        Image(systemName: "barcode.viewfinder")
-                            .font(.body.weight(.semibold))
+                        Text("📷")
                         Text("Start Scanning")
-                            .font(.body.bold())
+                            .font(.headline.bold())
                     }
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
+                    .padding(.vertical, 16)
                     .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
                 }
 
-                Spacer()
-
-                Image(systemName: "barcode.viewfinder")
-                    .font(.system(size: 56, weight: .thin))
-                    .foregroundStyle(Color.brand.opacity(0.35))
+                Text("📸")
+                    .font(.system(size: 64))
+                    .opacity(0.55)
             }
-            .padding(20)
+            .padding(22)
             .background(
                 LinearGradient(
-                    colors: [Color.brand.opacity(0.16), Color.brand.opacity(0.04)],
+                    colors: [Color.brand.opacity(0.18), Color.brand.opacity(0.05)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 ),
-                in: RoundedRectangle(cornerRadius: 18)
+                in: RoundedRectangle(cornerRadius: 20)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 18)
-                    .stroke(Color.brand.opacity(0.2), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.brand.opacity(0.25), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -289,14 +286,12 @@ struct HomeView: View {
 private struct ImpactStatCard: View {
     let value: String
     let label: String
-    let icon: String
-    let color: Color
+    let emoji: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Image(systemName: icon)
+            Text(emoji)
                 .font(.title3)
-                .foregroundStyle(color)
             Text(value)
                 .font(.title3.bold())
             Text(label)
@@ -386,7 +381,7 @@ private struct DealCard: View {
 
             // Store + distance
             HStack(spacing: 4) {
-                Image(systemName: "storefront")
+                Text("🏪")
                     .font(.caption2)
                 Text(entry.store.storeName)
                     .font(.caption2.weight(.medium))
@@ -400,7 +395,7 @@ private struct DealCard: View {
 
             // Expiry
             HStack(spacing: 4) {
-                Image(systemName: "clock")
+                Text("⏰")
                     .font(.caption2)
                 Text(formatExpiry(entry.item.expiryDate))
                     .font(.caption2)
