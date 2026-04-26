@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Binding var selectedTab: Int
+    @Binding var showAddSheet: Bool
     @EnvironmentObject private var sessionManager: SessionManager
     @StateObject private var viewModel = HomeViewModel()
 
@@ -119,7 +119,7 @@ struct HomeView: View {
     // MARK: - Scan hero
 
     private var scanHero: some View {
-        Button { selectedTab = 1 } label: {
+        Button { showAddSheet = true } label: {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
@@ -255,7 +255,7 @@ struct HomeView: View {
                 Text("Your saved ingredients")
                     .font(.headline)
                 Spacer()
-                Button("Scan more") { selectedTab = 1 }
+                Button("Scan more") { showAddSheet = true }
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(Color.brand)
             }
@@ -491,6 +491,6 @@ private struct SearchDealRow: View {
 // MARK: - Preview
 
 #Preview {
-    HomeView(selectedTab: .constant(0))
+    HomeView(showAddSheet: .constant(false))
         .environmentObject(SessionManager())
 }

@@ -6,6 +6,8 @@ final class IngredientConfirmationViewModel: ObservableObject {
     @Published var ingredients: [Ingredient]
     @Published var isFinding = false
     @Published var showRecipes = false
+    @Published var generatedRecipes: [Recipe] = []
+    @Published var recipeError: String?
 
     var confirmedIngredients: [Ingredient] {
         ingredients.filter { $0.isSelected }
@@ -27,6 +29,10 @@ final class IngredientConfirmationViewModel: ObservableObject {
             }
         }
 
+        generatedRecipes = await GeminiRecipeService.shared.generateRecipes(from: toSave)
+        if generatedRecipes.isEmpty {
+            recipeError = "Couldn't generate recipes. Please try again."
+        }
         isFinding = false
         showRecipes = true
     }

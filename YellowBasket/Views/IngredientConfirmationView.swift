@@ -89,7 +89,7 @@ struct IngredientConfirmationView: View {
         .navigationTitle("Confirm")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(isPresented: $viewModel.showRecipes) {
-            RecipeResultsView(ingredients: viewModel.confirmedIngredients)
+            RecipeResultsView(ingredients: viewModel.confirmedIngredients, recipes: viewModel.generatedRecipes)
         }
     }
 

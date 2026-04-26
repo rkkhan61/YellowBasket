@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RecipeResultsView: View {
     var ingredients: [Ingredient] = []
+    var recipes: [Recipe] = []
 
     var body: some View {
         if ingredients.isEmpty {
@@ -18,7 +19,7 @@ struct RecipeResultsView: View {
             VStack(alignment: .leading, spacing: 24) {
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(MockDataService.recipes.count) recipes found")
+                    Text("\(recipes.count) recipe\(recipes.count == 1 ? "" : "s") found")
                         .font(.title2.bold())
                     Text("Based on \(ingredients.count) confirmed ingredients")
                         .font(.subheadline)
@@ -26,13 +27,16 @@ struct RecipeResultsView: View {
                 }
                 .padding(.horizontal, 24)
 
-                if MockDataService.recipes.isEmpty {
+                if recipes.isEmpty {
                     emptyRecipes
                 } else {
                     VStack(spacing: 12) {
-                        ForEach(Array(MockDataService.recipes.enumerated()), id: \.element.id) { index, recipe in
-                            RecipeCard(recipe: recipe)
-                                .transition(.opacity)
+                        ForEach(recipes) { recipe in
+                            NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+                                RecipeCard(recipe: recipe)
+                            }
+                            .buttonStyle(.plain)
+                            .transition(.opacity)
                         }
                     }
                     .padding(.horizontal, 24)
@@ -137,13 +141,13 @@ private struct RecipeCard: View {
 
 #Preview("Results") {
     NavigationStack {
-        RecipeResultsView(ingredients: MockDataService.detectedIngredients)
+        RecipeResultsView(ingredients: MockDataService.detectedIngredients, recipes: MockDataService.recipes)
     }
 }
 
 #Preview("Empty recipes") {
     NavigationStack {
-        RecipeResultsView(ingredients: [MockDataService.detectedIngredients[0]])
+        RecipeResultsView(ingredients: MockDataService.detectedIngredients, recipes: [])
     }
 }
 

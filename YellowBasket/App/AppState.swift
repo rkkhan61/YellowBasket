@@ -3,6 +3,8 @@ import Observation
 
 @Observable
 final class AppState {
+    var savedRecipes: [Recipe] = []
+    var selectedTab: Int = 0
 }
 
 extension Color {

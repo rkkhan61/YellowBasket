@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import UIKit
 
 struct ScanView: View {
     @State private var selectedItem: PhotosPickerItem?
@@ -8,6 +9,7 @@ struct ScanView: View {
     @State private var showConfirmation = false
     @State private var detectedIngredients: [Ingredient] = []
     @State private var detectionError: String?
+    @State private var showCamera = false
 
     var body: some View {
         NavigationStack {
@@ -36,6 +38,9 @@ struct ScanView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showCamera) {
+                CameraPicker(image: $selectedImage, onImagePicked: { detectionError = nil })
+            }
         }
     }
 
@@ -44,75 +49,87 @@ struct ScanView: View {
     @ViewBuilder
     private func imagePreview(_ image: UIImage) -> some View {
         VStack(spacing: 20) {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.secondarySystemBackground))
                 .frame(maxWidth: .infinity)
                 .frame(height: 260)
+                .overlay(
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .allowsHitTesting(false)
+                )
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .allowsHitTesting(false)   // prevents overflow hit area blocking buttons below
                 .padding(.horizontal, 24)
 
-            VStack(spacing: 4) {
-                Text("Photo ready")
-                    .font(.headline)
-                Text("Tap continue to detect your ingredients.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-
-            VStack(spacing: 12) {
-                Button {
-                    isAnalyzing = true
-                    detectionError = nil
-                    Task {
-                        do {
-                            let ingredients = try await GeminiService.shared.detectIngredients(from: image)
-                            detectedIngredients = ingredients
-                            showConfirmation = true
-                        } catch {
-                            detectionError = error.localizedDescription
-                        }
-                        isAnalyzing = false
-                    }
-                } label: {
-                    ZStack {
-                        Text("Continue")
-                            .font(.headline)
-                            .opacity(isAnalyzing ? 0 : 1)
-
-                        HStack(spacing: 8) {
-                            ProgressView()
-                                .tint(.black)
-                                .scaleEffect(0.85)
-                            Text("Analyzing ingredients...")
-                                .font(.headline)
-                        }
-                        .opacity(isAnalyzing ? 1 : 0)
-                    }
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
-                }
-                .buttonStyle(PressableButtonStyle())
-                .disabled(isAnalyzing)
-
-                PhotosPicker(selection: $selectedItem, matching: .images) {
-                    Text("Choose a different photo")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.brand)
-                }
-                .disabled(isAnalyzing)
-
-                if let error = detectionError {
-                    Text(error)
+            if isAnalyzing {
+                VStack(spacing: 14) {
+                    ProgressView()
+                        .scaleEffect(1.3)
+                    Text("Analyzing ingredients...")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 32)
+            } else {
+                VStack(spacing: 4) {
+                    Text("Photo ready")
+                        .font(.headline)
+                    Text("Tap Continue to detect your ingredients.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(spacing: 12) {
+                    Button {
+                        isAnalyzing = true
+                        detectionError = nil
+                        Task {
+                            do {
+                                let ingredients = try await GeminiService.shared.detectIngredients(from: image)
+                                detectedIngredients = ingredients
+                                showConfirmation = true
+                            } catch {
+                                detectionError = error.localizedDescription
+                            }
+                            isAnalyzing = false
+                        }
+                    } label: {
+                        Text("Continue")
+                            .font(.headline)
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(PressableButtonStyle())
+
+                    HStack(spacing: 20) {
+                        Button {
+                            if UIImagePickerController.isSourceTypeAvailable(.camera) { showCamera = true }
+                        } label: {
+                            Text("Take Photo")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.brand)
+                        }
+
+                        PhotosPicker(selection: $selectedItem, matching: .images) {
+                            Text("Choose Photo")
+                                .font(.subheadline)
+                                .foregroundStyle(Color.brand)
+                        }
+                    }
+
+                    if let error = detectionError {
+                        Text(error)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                }
+                .padding(.horizontal, 24)
             }
-            .padding(.horizontal, 24)
         }
     }
 
@@ -143,16 +160,66 @@ struct ScanView: View {
             }
             .padding(.horizontal, 24)
 
-            PhotosPicker(selection: $selectedItem, matching: .images) {
-                Label("Choose Photo", systemImage: "photo.badge.plus")
-                    .font(.headline)
-                    .foregroundStyle(.black)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+            HStack(spacing: 12) {
+                Button {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) { showCamera = true }
+                } label: {
+                    Label("Take Photo", systemImage: "camera.fill")
+                        .font(.headline)
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.brand, in: RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(PressableButtonStyle())
+
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    Label("Library", systemImage: "photo.badge.plus")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(PressableButtonStyle())
             .padding(.horizontal, 24)
+        }
+    }
+}
+
+// MARK: - Camera picker
+
+private struct CameraPicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    let onImagePicked: () -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: CameraPicker
+        init(_ parent: CameraPicker) { self.parent = parent }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let picked = info[.originalImage] as? UIImage {
+                parent.image = picked
+                parent.onImagePicked()
+            }
+            parent.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
         }
     }
 }
