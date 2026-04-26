@@ -6,14 +6,14 @@ struct MockDataService {
 
     // High confidence (≥ 0.9) → auto-confirmed; low confidence (< 0.9) → flagged for review
     static let detectedIngredients: [Ingredient] = [
-        Ingredient(id: UUID(), name: "Eggs",           emoji: "🥚", isSelected: true,  confidence: 0.97),
-        Ingredient(id: UUID(), name: "Butter",         emoji: "🧈", isSelected: true,  confidence: 0.95),
-        Ingredient(id: UUID(), name: "Milk",           emoji: "🥛", isSelected: true,  confidence: 0.93),
-        Ingredient(id: UUID(), name: "Cheddar Cheese", emoji: "🧀", isSelected: true,  confidence: 0.91),
-        Ingredient(id: UUID(), name: "Spinach",        emoji: "🥬", isSelected: true,  confidence: 0.96),
-        Ingredient(id: UUID(), name: "Garlic",         emoji: "🧄", isSelected: true,  confidence: 0.94),
-        Ingredient(id: UUID(), name: "Tomatoes",       emoji: "🍅", isSelected: false, confidence: 0.72),
-        Ingredient(id: UUID(), name: "Bell Pepper",    emoji: "🫑", isSelected: false, confidence: 0.68),
+        Ingredient(id: UUID(), name: "Eggs",           emoji: "🥚", category: "Dairy & Eggs", isSelected: true,  confidence: 0.97),
+        Ingredient(id: UUID(), name: "Butter",         emoji: "🧈", category: "Dairy & Eggs", isSelected: true,  confidence: 0.95),
+        Ingredient(id: UUID(), name: "Milk",           emoji: "🥛", category: "Dairy & Eggs", isSelected: true,  confidence: 0.93),
+        Ingredient(id: UUID(), name: "Cheddar Cheese", emoji: "🧀", category: "Dairy & Eggs", isSelected: true,  confidence: 0.91),
+        Ingredient(id: UUID(), name: "Spinach",        emoji: "🥬", category: "Vegetables",   isSelected: true,  confidence: 0.96),
+        Ingredient(id: UUID(), name: "Garlic",         emoji: "🧄", category: "Vegetables",   isSelected: true,  confidence: 0.94),
+        Ingredient(id: UUID(), name: "Tomatoes",       emoji: "🍅", category: "Vegetables",   isSelected: false, confidence: 0.72),
+        Ingredient(id: UUID(), name: "Bell Pepper",    emoji: "🫑", category: "Vegetables",   isSelected: false, confidence: 0.68),
     ]
 
     // MARK: - Recipes

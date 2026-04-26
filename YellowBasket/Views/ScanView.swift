@@ -6,6 +6,8 @@ struct ScanView: View {
     @State private var selectedImage: UIImage?
     @State private var isAnalyzing = false
     @State private var showConfirmation = false
+    @State private var detectedIngredients: [Ingredient] = []
+    @State private var detectionError: String?
 
     var body: some View {
         NavigationStack {
@@ -22,7 +24,7 @@ struct ScanView: View {
             }
             .navigationTitle("Scan")
             .navigationDestination(isPresented: $showConfirmation) {
-                IngredientConfirmationView()
+                IngredientConfirmationView(ingredients: detectedIngredients)
             }
             .onChange(of: selectedItem) { _, newItem in
                 Task {
@@ -30,6 +32,7 @@ struct ScanView: View {
                     if let data = try? await newItem.loadTransferable(type: Data.self),
                        let image = UIImage(data: data) {
                         selectedImage = image
+                        detectionError = nil
                     }
                 }
             }
@@ -61,9 +64,16 @@ struct ScanView: View {
             VStack(spacing: 12) {
                 Button {
                     isAnalyzing = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    detectionError = nil
+                    Task {
+                        do {
+                            let ingredients = try await GeminiService.shared.detectIngredients(from: image)
+                            detectedIngredients = ingredients
+                            showConfirmation = true
+                        } catch {
+                            detectionError = error.localizedDescription
+                        }
                         isAnalyzing = false
-                        showConfirmation = true
                     }
                 } label: {
                     ZStack {
@@ -94,6 +104,13 @@ struct ScanView: View {
                         .foregroundStyle(Color.brand)
                 }
                 .disabled(isAnalyzing)
+
+                if let error = detectionError {
+                    Text(error)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
             }
             .padding(.horizontal, 24)
         }

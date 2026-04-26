@@ -15,6 +15,7 @@ final class FirestoreService {
         let data: [[String: Any]] = ingredients.map { [
             "name": $0.name,
             "emoji": $0.emoji,
+            "category": $0.category,
             "confidence": $0.confidence
         ]}
         do {
@@ -37,7 +38,8 @@ final class FirestoreService {
                     let emoji      = dict["emoji"]      as? String,
                     let confidence = dict["confidence"] as? Double
                 else { return nil }
-                return Ingredient(id: UUID(), name: name, emoji: emoji, isSelected: true, confidence: confidence)
+                let category = dict["category"] as? String ?? "Other"
+                return Ingredient(id: UUID(), name: name, emoji: emoji, category: category, isSelected: true, confidence: confidence)
             }
         } catch {
             print("[FirestoreService] fetchIngredients error:", error.localizedDescription)

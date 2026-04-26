@@ -11,7 +11,7 @@ final class IngredientConfirmationViewModel: ObservableObject {
         ingredients.filter { $0.isSelected }
     }
 
-    init(ingredients: [Ingredient] = MockDataService.detectedIngredients) {
+    init(ingredients: [Ingredient]) {
         self.ingredients = ingredients
     }
 
