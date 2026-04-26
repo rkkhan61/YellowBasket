@@ -152,6 +152,7 @@ struct RecipeDetailView: View {
                 Button {
                     appState.savedRecipes.append(recipe)
                     appState.selectedTab = 2
+                    appState.dismissScanFlow = true
                 } label: {
                     HStack(spacing: 8) {
                         Text(isSaved ? "✓" : "🔖")

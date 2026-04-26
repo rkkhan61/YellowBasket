@@ -16,12 +16,18 @@ struct MainTabView: View {
             case 2:
                 SavedView()
             default:
-                ProfilePlaceholderView()
+                SettingsView()
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             CustomTabBar(selectedTab: $appState.selectedTab, onPlusTap: { showAddSheet = true })
-                .background(Color(.systemBackground))
+                .background(Color(.systemBackground).ignoresSafeArea(edges: .bottom))
+        }
+        .onChange(of: appState.dismissScanFlow) { _, shouldDismiss in
+            if shouldDismiss {
+                showScanFlow = false
+                appState.dismissScanFlow = false
+            }
         }
         .sheet(isPresented: $showAddSheet) {
             AddIngredientsSheet(onImageScan: {
@@ -45,28 +51,28 @@ private struct CustomTabBar: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            TabBarButton(emoji: "🏠", label: "Home",    selected: selectedTab == 0) { selectedTab = 0 }
-            TabBarButton(emoji: "🍴", label: "Recipes", selected: selectedTab == 1) { selectedTab = 1 }
+            TabBarButton(emoji: "🏠", label: "Home",     selected: selectedTab == 0) { selectedTab = 0 }
+            TabBarButton(emoji: "🍴", label: "Recipes",  selected: selectedTab == 1) { selectedTab = 1 }
 
             // Center + button
             Button(action: onPlusTap) {
                 ZStack {
                     Circle()
                         .fill(Color.brand)
-                        .frame(width: 48, height: 48)
-                        .shadow(color: Color.brand.opacity(0.3), radius: 6, x: 0, y: 2)
+                        .frame(width: 38, height: 38)
+                        .shadow(color: Color.brand.opacity(0.25), radius: 4, x: 0, y: 2)
                     Text("+")
-                        .font(.system(size: 26, weight: .semibold))
+                        .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(.black)
                 }
             }
             .frame(maxWidth: .infinity)
 
-            TabBarButton(emoji: "🔖", label: "Saved",   selected: selectedTab == 2) { selectedTab = 2 }
-            TabBarButton(emoji: "👤", label: "Profile",  selected: selectedTab == 3) { selectedTab = 3 }
+            TabBarButton(emoji: "🔖", label: "Saved",    selected: selectedTab == 2) { selectedTab = 2 }
+            TabBarButton(emoji: "⚙️", label: "Settings", selected: selectedTab == 3) { selectedTab = 3 }
         }
-        .padding(.top, 10)
-        .padding(.bottom, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 6)
         .overlay(Divider(), alignment: .top)
     }
 }
@@ -79,12 +85,12 @@ private struct TabBarButton: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 4) {
+            VStack(spacing: 2) {
                 Text(emoji)
-                    .font(.system(size: 22))
+                    .font(.system(size: 18))
                     .opacity(selected ? 1.0 : 0.4)
                 Text(label)
-                    .font(.caption2.weight(selected ? .semibold : .regular))
+                    .font(.system(size: 9, weight: selected ? .semibold : .regular))
                     .foregroundStyle(selected ? Color.brand : Color(.systemGray))
             }
             .frame(maxWidth: .infinity)

@@ -5,6 +5,7 @@ import Observation
 final class AppState {
     var savedRecipes: [Recipe] = []
     var selectedTab: Int = 0
+    var dismissScanFlow: Bool = false
 }
 
 extension Color {
