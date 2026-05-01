@@ -38,7 +38,7 @@ struct LoginView: View {
                     VStack(spacing: 6) {
                         Text("Yellow Basket")
                             .font(.system(size: 32, weight: .bold, design: .rounded))
-                        Text("* Brand tagline to be inserted later *")
+                        Text("* Brand tagline and logo to be inserted later *")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }

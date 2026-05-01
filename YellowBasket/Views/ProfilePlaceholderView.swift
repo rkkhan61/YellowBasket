@@ -22,10 +22,10 @@ struct SettingsView: View {
                 legalSection
                 logoutSection
             }
+            .safeAreaPadding(.bottom, AppLayout.tabBarContentClearance)
             .listStyle(.insetGrouped)
             .navigationTitle("Settings")
         }
-        .preferredColorScheme(colorSchemeValue)
     }
 
     // MARK: - Account
@@ -116,14 +116,6 @@ struct SettingsView: View {
             return user.email.prefix(1).uppercased()
         }
         return letters.joined()
-    }
-
-    private var colorSchemeValue: ColorScheme? {
-        switch appearanceMode {
-        case 1: return .light
-        case 2: return .dark
-        default: return nil
-        }
     }
 }
 

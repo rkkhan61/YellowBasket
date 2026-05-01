@@ -14,7 +14,7 @@ struct SplashView: View {
                         .font(.largeTitle.bold())
                         .foregroundStyle(.black)
 
-                    Text("Your kitchen, sorted.")
+                    Text("* Brand tagline and logo to be inserted later * ")
                         .font(.headline)
                         .foregroundStyle(.black.opacity(0.65))
                 }

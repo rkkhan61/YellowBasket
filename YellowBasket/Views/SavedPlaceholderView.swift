@@ -13,6 +13,7 @@ struct SavedView: View {
                 }
             }
             .navigationTitle("Saved")
+            .safeAreaPadding(.bottom, AppLayout.tabBarContentClearance)
         }
     }
 
@@ -32,6 +33,7 @@ struct SavedView: View {
             .padding(.top, 16)
             .padding(.bottom, 32)
         }
+        .safeAreaPadding(.bottom, AppLayout.tabBarContentClearance)
     }
 
     // MARK: - Empty state
@@ -56,6 +58,7 @@ struct SavedView: View {
 
             Spacer()
         }
+        .padding(.bottom, AppLayout.tabBarContentClearance)
     }
 }
 

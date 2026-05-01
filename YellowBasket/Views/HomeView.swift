@@ -50,6 +50,7 @@ struct HomeView: View {
                 }
                 .padding(.bottom, 36)
             }
+            .safeAreaPadding(.bottom, AppLayout.tabBarContentClearance)
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle("YellowBasket")
             .navigationBarTitleDisplayMode(.inline)

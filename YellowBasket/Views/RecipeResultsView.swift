@@ -45,6 +45,7 @@ struct RecipeResultsView: View {
             .padding(.top, 16)
             .padding(.bottom, 32)
         }
+        .safeAreaPadding(.bottom, AppLayout.tabBarContentClearance)
         .navigationTitle("Results")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -94,6 +95,7 @@ struct RecipeResultsView: View {
 
             Spacer()
         }
+        .safeAreaPadding(.bottom, AppLayout.tabBarContentClearance)
         .navigationTitle("Recipes")
     }
 }
