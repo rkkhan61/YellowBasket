@@ -30,10 +30,12 @@ final class IngredientConfirmationViewModel: ObservableObject {
         }
 
         generatedRecipes = await GeminiRecipeService.shared.generateRecipes(from: toSave)
-        if generatedRecipes.isEmpty {
-            recipeError = "Couldn't generate recipes. Please try again."
-        }
         isFinding = false
-        showRecipes = true
+        if generatedRecipes.isEmpty {
+            recipeError = "Couldn't generate recipes. Please check your connection and try again."
+        } else {
+            recipeError = nil
+            showRecipes = true
+        }
     }
 }

@@ -80,6 +80,21 @@ struct IngredientConfirmationView: View {
                     Text("\(viewModel.confirmedIngredients.count) of \(viewModel.ingredients.count) selected")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+
+                    if let error = viewModel.recipeError {
+                        VStack(spacing: 8) {
+                            Text(error)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("Try Again") {
+                                Task { await viewModel.confirmAndFindRecipes() }
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.brand)
+                        }
+                        .padding(.top, 4)
+                    }
                 }
                 .padding(.horizontal, 24)
             }

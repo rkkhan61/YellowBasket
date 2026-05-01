@@ -118,7 +118,7 @@ struct MockDataService {
                     originalPrice: 1.20,
                     discountedPrice: 0.40,
                     discountPercentage: 67,
-                    expiryDate: "2026-04-26",
+                    expiryDate: "2026-05-18",
                     availableQuantity: 12,
                     unit: "bag (500g)"
                 ),
@@ -129,7 +129,7 @@ struct MockDataService {
                     originalPrice: 1.80,
                     discountedPrice: 0.60,
                     discountPercentage: 67,
-                    expiryDate: "2026-04-25",
+                    expiryDate: "2026-05-16",
                     availableQuantity: 8,
                     unit: "pack (250g)"
                 ),
@@ -140,7 +140,7 @@ struct MockDataService {
                     originalPrice: 1.50,
                     discountedPrice: 0.55,
                     discountPercentage: 63,
-                    expiryDate: "2026-04-26",
+                    expiryDate: "2026-05-20",
                     availableQuantity: 15,
                     unit: "pack (6 count)"
                 ),
@@ -151,7 +151,7 @@ struct MockDataService {
                     originalPrice: 3.20,
                     discountedPrice: 1.60,
                     discountPercentage: 50,
-                    expiryDate: "2026-04-28",
+                    expiryDate: "2026-05-22",
                     availableQuantity: 5,
                     unit: "block (400g)"
                 ),
@@ -170,7 +170,7 @@ struct MockDataService {
                     originalPrice: 0.90,
                     discountedPrice: 0.30,
                     discountPercentage: 67,
-                    expiryDate: "2026-04-25",
+                    expiryDate: "2026-05-15",
                     availableQuantity: 20,
                     unit: "bunch"
                 ),
@@ -181,7 +181,7 @@ struct MockDataService {
                     originalPrice: 1.40,
                     discountedPrice: 0.50,
                     discountPercentage: 64,
-                    expiryDate: "2026-04-25",
+                    expiryDate: "2026-05-17",
                     availableQuantity: 10,
                     unit: "bag (200g)"
                 ),
@@ -192,7 +192,7 @@ struct MockDataService {
                     originalPrice: 1.10,
                     discountedPrice: 0.45,
                     discountPercentage: 59,
-                    expiryDate: "2026-04-26",
+                    expiryDate: "2026-05-19",
                     availableQuantity: 7,
                     unit: "bottle (1L)"
                 ),
@@ -203,7 +203,7 @@ struct MockDataService {
                     originalPrice: 2.50,
                     discountedPrice: 1.00,
                     discountPercentage: 60,
-                    expiryDate: "2026-04-29",
+                    expiryDate: "2026-05-21",
                     availableQuantity: 6,
                     unit: "box (6 large)"
                 ),
@@ -222,7 +222,7 @@ struct MockDataService {
                     originalPrice: 0.80,
                     discountedPrice: 0.25,
                     discountPercentage: 69,
-                    expiryDate: "2026-04-27",
+                    expiryDate: "2026-05-23",
                     availableQuantity: 25,
                     unit: "single (large)"
                 ),
@@ -233,7 +233,7 @@ struct MockDataService {
                     originalPrice: 1.80,
                     discountedPrice: 0.90,
                     discountPercentage: 50,
-                    expiryDate: "2026-05-01",
+                    expiryDate: "2026-05-25",
                     availableQuantity: 9,
                     unit: "block (250g)"
                 ),
@@ -244,7 +244,7 @@ struct MockDataService {
                     originalPrice: 1.20,
                     discountedPrice: 0.40,
                     discountPercentage: 67,
-                    expiryDate: "2026-04-26",
+                    expiryDate: "2026-05-18",
                     availableQuantity: 14,
                     unit: "single"
                 ),
@@ -255,7 +255,7 @@ struct MockDataService {
                     originalPrice: 0.60,
                     discountedPrice: 0.20,
                     discountPercentage: 67,
-                    expiryDate: "2026-05-03",
+                    expiryDate: "2026-05-28",
                     availableQuantity: 30,
                     unit: "bulb"
                 ),
@@ -266,7 +266,7 @@ struct MockDataService {
                     originalPrice: 2.00,
                     discountedPrice: 0.70,
                     discountPercentage: 65,
-                    expiryDate: "2026-04-25",
+                    expiryDate: "2026-05-16",
                     availableQuantity: 4,
                     unit: "pack (400g)"
                 ),

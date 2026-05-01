@@ -110,9 +110,28 @@ The following features are planned for future iterations:
 
 ## How to Run
 
-1. Open `YellowBasket.xcodeproj` in Xcode  
-2. Select an iPhone simulator or a physical device  
-3. Press Run  
+1. Open `YellowBasket.xcodeproj` in Xcode
+2. Select an iPhone simulator or a physical device
+3. Press Run
+
+### Required setup files (not in git)
+
+Two files are excluded from the repository and must be obtained separately before building:
+
+- `YellowBasket/Resources/Secrets.plist` — must contain a `GEMINI_API_KEY` string entry with a valid Google Gemini API key.
+- `GoogleService-Info.plist` — Firebase configuration file for the `yellowbasket-f7095` project. Download from the Firebase Console under Project Settings > Your apps.
+
+### Firestore security rules
+
+`firestore.rules` in the project root contains the required Firestore security rules. These must be deployed before the app is used with real user data. Deploy via the Firebase CLI:
+
+```
+firebase deploy --only firestore:rules
+```
+
+Or paste the contents of `firestore.rules` into the Firebase Console under Firestore Database > Rules.
+
+The rules restrict each user to reading and writing only their own document at `users/{userId}`.
 
 ---
 
