@@ -123,15 +123,28 @@ Two files are excluded from the repository and must be obtained separately befor
 
 ### Firestore security rules
 
-`firestore.rules` in the project root contains the required Firestore security rules. These must be deployed before the app is used with real user data. Deploy via the Firebase CLI:
+The following rules must be deployed in the Firebase Console under **Firestore Database > Rules** before the app is used with real user data. They restrict each user to reading and writing only their own document.
 
 ```
-firebase deploy --only firestore:rules
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /ingredients/{ingredientId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
 ```
-
-Or paste the contents of `firestore.rules` into the Firebase Console under Firestore Database > Rules.
-
-The rules restrict each user to reading and writing only their own document at `users/{userId}`.
 
 ---
 
